@@ -1,0 +1,65 @@
+%% Parameters
+Vg      = 420;              % Input voltage [V]
+V       = 13.8;             % Converter output voltage [V]
+Rbat    = 0.008;            % Battery internal resistance [R]
+Rlimit  = 1.3;              % Precharge current limit resistor for battery inrush current [R]
+R       = 1.3;              % Load resistance [Ohm]
+diL     = 0.05;             % Inductor current ripple [A]
+dVc     = 0.05;             % Capacitor voltage ripple [V]
+F       = 50e3;             % Switching frequency [Hz]
+Ts      = 1 / F;            % Switching period [s]
+D       = V / Vg;           % Duty cycle
+iL      = V / R;            % Average inductor current [A]
+
+%% Component Sizing
+L       = ((Vg - V) / (2 * diL)) * (D * Ts);              % Inductance [H]
+C       = ((Vg - V) / (16 * L * dVc)) * (D * Ts)^2;       % Capacitance [F]
+iLrms   = sqrt(iL^2 + ((diL/2) / sqrt(3))^2);             % RMS inductor current
+
+%% Selected Component Values
+L_select    = 1.25 * L;
+C_select    = 1.25 * C;
+
+% Actual component parameters
+L_actual    = 5.641e-3;
+L_esr       = 0.239;
+C_actual    = 10e-6;
+C_esr       = 15e-3;
+
+
+%% Open and Run Simulink Model (if needed)
+model = 'SolarPackBuckConverter'; % Replace with your actual Simulink model name
+if ~bdIsLoaded(model)
+    open_system(model);
+end
+
+% Run the model if not already run (or force it to run)
+try
+    simOut = sim(model);
+    out = simOut;  % To use existing output structure
+catch
+    warning('Simulink model did not run correctly.');
+end
+
+%% Efficiency Calculation (only if simulation ran)
+if exist('out', 'var')
+    try
+        % Extract simulation data
+        LoadCurrent   = out.yout.getElement('LoadCurrent').Values.Data(end);
+        LoadVoltage   = out.yout.getElement('LoadVoltage').Values.Data(end);
+        SourceCurrent = out.yout.getElement('InputCurrent').Values.Data(end);
+
+        % Power calculations
+        Pout = LoadCurrent * LoadVoltage;
+        Pin  = SourceCurrent * Vg;
+        n    = (Pout / Pin) * 100;
+
+        fprintf('Efficiency: %.2f%%\n', n);
+    catch
+        warning('Required simulation output elements not found.');
+    end
+else
+    disp('Efficiency section skipped: Simulation output not found.');
+end
+
+
