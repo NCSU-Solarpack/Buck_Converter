@@ -24,29 +24,27 @@ void System_Init(void){
 }
 
 void ADC_Init(void){
-    // Turn on ADC module
-    ADCON1Lbits.ADON = 0;      // Disable ADC before config
+    ADCON1Lbits.ADON = 0;
 
-    // Clock setup
-    ADCON3Hbits.CLKSEL = 0;    // FOSC/2
-    ADCON3Hbits.CLKDIV = 1;    // Clock divider
+    ADCON3Hbits.CLKSEL  = 0;    // FOSC/2
+    ADCON3Hbits.CLKDIV  = 1;
+    ADCON1Hbits.FORM    = 0;    // Unsigned integer
+    ADCON1Hbits.SHRRES  = 3;    // 12-bit
+    ADCON2Lbits.SHRADCS = 10;
 
-    // Sampling and conversion
-    ADCON1Hbits.FORM = 0;      // Integer format
-    ADCON1Hbits.SHRRES = 3;    // 12-bit resolution
-    ADCON2Lbits.SHRADCS = 10;  // Sample time
+    ADCON3Lbits.SHRPWR = 1;
+    while(ADCON3Lbits.SHRRDY == 0);
 
-    // Enable shared core
-    ADCON3Lbits.SHRPWR = 1;    // Power shared core
-    while(ADCON3Lbits.SHRRDY == 0); // Wait until ready
+    // AN2 on RB7 — Stage 1 (80V rail, divided down)
+    ADMOD0Lbits.SIGN2 = 0;
+    ADMOD0Lbits.DIFF2 = 0;
+    ADIELbits.IE2      = 0;
 
-    // Enable channel AN2
-    ADMOD0Lbits.SIGN2 = 0;     // Unsigned
-    ADMOD0Lbits.DIFF2 = 0;     // Single-ended
+    // AN3 on RA3 — Stage 2 (12V rail, divided down)
+    ADMOD0Lbits.SIGN3 = 0;
+    ADMOD0Lbits.DIFF3 = 0;
+    ADIELbits.IE3      = 0;
 
-    // Select AN2 for input
-    ADIELbits.IE2 = 0;         // No interrupt needed
-
-    // Turn ADC on
-    ADCON1Lbits.ADON = 1;  
+    ADCON1Lbits.ADON = 1; // turn on adc
 }
+

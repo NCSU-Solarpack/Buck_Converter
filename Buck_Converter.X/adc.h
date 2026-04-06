@@ -8,9 +8,12 @@
 
 #ifndef ADC_H
 #define	ADC_H
+#include <stdint.h>
 
 //Function prototypes
-uint16_t ADC_READ_AN2(void);
+uint16_t ADC_READ(uint8_t channel); // channel = 2 or 3
+
+#endif
 
 #ifdef	__cplusplus
 extern "C" {
@@ -22,6 +25,4 @@ extern "C" {
 #ifdef	__cplusplus
 }
 #endif
-
-#endif	/* ADC_H */
 
