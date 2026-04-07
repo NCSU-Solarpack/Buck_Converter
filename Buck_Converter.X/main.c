@@ -20,21 +20,17 @@
 #include "Init.h"
 #include "pwm.h"
 #include "adc.h"
+#include "timer.h"
 
 int main(void) {
     System_Init();
     ADC_Init();
-    PWM_Init(); // rplacers bare Period_Calc()
-    
-    while(true){
-        Get_ADC_Raw_Stage_1();
-        Get_ADC_Raw_Stage_2();
-        Scale_Convert_ADC_Stage_1();
-        Scale_Convert_ADC_Stage_2();
-        Error_Calc_Stage_1();  
-        Error_Calc_Stage_2();
-        // Step 4: PI_Compute() calls go here
-        // Step 6: this whole block moves into a Timer ISR
+    PWM_Init();
+    Timer1_Init();  // starts 20 kHz control loop with soft-start
+
+    while(true) {
+        // Control loop runs in Timer1 ISR (timer.c)
+        // Main loop is idle - can add telemetry/diagnostics here later
     }
 
     return 0;

@@ -15,7 +15,7 @@ uint16_t PWM_Period_Counts;
 // HSPWM  = 4 * Fosc. Assumes Fosc = 100 mHz -> HSPWM = 400 MHz
 #define HSPWM_CLOCK_HZ  400000000UL
 
-void Period_Calc(void) {
+void PWM_Init(void) {
     Period_Calc(); // ensure counts are ready
     
     // PG1: Stage 1 buck (80V -> output)
@@ -67,5 +67,6 @@ void PWM_SetDuty_Stage2(uint16_t duty_counts) {
 }
 
 void Period_Calc(void){
+    PWM_Period_Counts = HSPWM_CLOCK_HZ / FREQUENCY;
     Target_Duty_Period_us = 1000000UL / FREQUENCY;
 }

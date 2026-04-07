@@ -10,19 +10,18 @@
 #define	ADC_H
 #include <stdint.h>
 
-//Function prototypes
-uint16_t ADC_READ(uint8_t channel); // channel = 2 or 3
-
-#endif
-
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-
-
+//Function prototypes
+uint16_t ADC_Read(uint8_t channel);
+uint16_t ADC_Read_AN2(void);
+uint16_t ADC_Read_AN3(void);
 
 #ifdef	__cplusplus
 }
+#endif
+
 #endif
 
