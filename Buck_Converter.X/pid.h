@@ -3,19 +3,19 @@
 
 // PID Controller State
 typedef struct {
-    // Tuning parameters  //Reece: int16_t used because it uses less memory but still gives a good amount of precision (compared to float).
-    int16_t Kp; // Proportional gain
-    int16_t Ki; // Integral gain
-    int16_t Kd; // Derivative gain
+    // Tuning parameters
+    float Kp; // Proportional gain
+    float Ki; // Integral gain
+    float Kd; // Derivative gain
 
     // Output limits
-    int16_t out_min;
-    int16_t out_max;
+    float out_min;
+    float out_max;
 
     // Internal state
-    int16_t integral; // accum
-    int16_t prev_error;
-    int16_t dt;  // time step (s)
+    float integral; // accum
+    float prev_error;
+    float dt;  // time step (s)
 } PID_t;
 
 // Func Prototypes
